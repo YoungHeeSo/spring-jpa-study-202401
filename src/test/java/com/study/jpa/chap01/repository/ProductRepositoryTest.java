@@ -72,7 +72,7 @@ class ProductRepositoryTest {
     }
 
     @Test
-    @DisplayName("id 1번 상품을 삭제한다")
+    @DisplayName("1번 상품을 삭제한다")
     void deleteTest() {
         //given
         long id = 1L;
@@ -89,11 +89,27 @@ class ProductRepositoryTest {
         //given
         long id = 3L;
         //when
-        Product product = productRepository.findById(id).get();
+        Optional<Product> product = productRepository.findById(id);
         //then
         System.out.println("product = " + product);
-        assertEquals("케이크", product.getName());
-        assertNotNull(product);
+
+        // null 체크를 간소화하기 위한 Optional 타입
+        // ifPresent는 nul이 아니면 람다의 코드 진행, null이면 무시
+        product.ifPresent(p -> {
+            assertEquals("케이크", p.getName());
+            assertNotNull(p);
+        });
+
+        // product가 null이면 새로운 new Product를 반환하고
+        // null이 아니면 Optional 안에서 꺼내서 반환
+        Product ppp = product.orElse(new Product());
+
+        // null 이면 예외를 발생, 어떤 예외를 발생시킬지 정할 수 있음
+        // null 이 아니면 Optional 에서 꺼내서 반환
+        Product pppp = product.orElseThrow();
+
+        /* assertEquals("케이크", product.getName());
+        assertNotNull(product); */
     }
 
     @Test
